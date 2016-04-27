@@ -96,6 +96,30 @@ bool Sudoku::check_domain(const int &i, const int &j, const int &k) {
 }
 
 
+void Sudoku::get_next_single_domain(int &x, int &y) {
+    x = -1; y = -1;
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            int count = 0;
+            for (int k = 0; k < 9; ++k) {
+                if (domain[i][j][k]) {
+                    ++count;
+                }
+            }
+            if (count == 1) {
+                x = i; y = j;
+                break;
+            }
+        }
+        if (x != -1) {
+            break;
+        }
+    }
+
+    return;
+}
+
+
 void Sudoku::update_domains() {
     for (int i = 0; i < 9; ++i) {
         for (int j = 0; j < 9; ++j) {

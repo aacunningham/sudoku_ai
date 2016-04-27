@@ -124,25 +124,31 @@ void Sudoku::update_domains() {
     for (int i = 0; i < 9; ++i) {
         for (int j = 0; j < 9; ++j) {
             int k;
-            for (k = 0; k < 9; ++k) {
-                domain[i][j][k] = true;
-            }
-            for (k = 0; k < 9; ++k) {
-                if (squares[k][j] > 0 && squares[k][j] < 10) {
-                    domain[i][j][(squares[k][j] - 1)] = false;
+            if (squares[i][j] == 0) {
+                for (k = 0; k < 9; ++k) {
+                    domain[i][j][k] = false;
                 }
-            }
-            for (k = 0; k < 9; ++k) {
-                if (squares[i][k] > 0 && squares[i][k] < 10) {
-                    domain[i][j][(squares[i][k] - 1)] = false;
+            } else {
+                for (k = 0; k < 9; ++k) {
+                    domain[i][j][k] = true;
                 }
-            }
-            int group_x = i / 3;
-            int group_y = j / 3;
-            for (int x = group_x * 3; x < (group_x + 1) * 3; ++x) {
-                for (int y = group_y * 3; y < (group_y + 1) * 3; ++y) {
-                    if (squares[x][y] > 0 && squares[x][y] < 10) {
-                        domain[i][j][(squares[x][y] - 1)] = false;
+                for (k = 0; k < 9; ++k) {
+                    if (squares[k][j] > 0 && squares[k][j] < 10) {
+                        domain[i][j][(squares[k][j] - 1)] = false;
+                    }
+                }
+                for (k = 0; k < 9; ++k) {
+                    if (squares[i][k] > 0 && squares[i][k] < 10) {
+                        domain[i][j][(squares[i][k] - 1)] = false;
+                    }
+                }
+                int group_x = i / 3;
+                int group_y = j / 3;
+                for (int x = group_x * 3; x < (group_x + 1) * 3; ++x) {
+                    for (int y = group_y * 3; y < (group_y + 1) * 3; ++y) {
+                        if (squares[x][y] > 0 && squares[x][y] < 10) {
+                            domain[i][j][(squares[x][y] - 1)] = false;
+                        }
                     }
                 }
             }

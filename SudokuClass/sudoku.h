@@ -16,11 +16,12 @@ public:
     void write(const int &value, const int &i, const int &j);
     bool check_domain(const int &i, const int &j, const int &k);
 
+    void update_domains();
+
 private:
     int** squares;
     bool*** domain;
 };
-
 
 #endif
 

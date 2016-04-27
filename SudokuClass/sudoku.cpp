@@ -1,3 +1,4 @@
+#include <iostream>
 #include "sudoku.h"
 
 
@@ -11,7 +12,7 @@ Sudoku::Sudoku() {
             squares[i][j] = 0;
             domain[i][j] = new bool[9];
             for (int k = 0; k < 9; ++k) {
-                domain[i][j][k] = false;
+                domain[i][j][k] = true;
             }
         }
     }
@@ -26,11 +27,9 @@ Sudoku::Sudoku(int** input) {
         for (int j = 0; j < 9; ++j) {
             squares[i][j] = input[i][j];
             domain[i][j] = new bool[9];
-            for (int k = 0; k < 9; ++k) {
-                domain[i][j][k] = false;
-            }
         }
     }
+    update_domains();
 }
 
 Sudoku::Sudoku (const Sudoku &input) {
@@ -52,8 +51,14 @@ Sudoku::Sudoku (const Sudoku &input) {
 Sudoku::~Sudoku () {
     for (int i = 0; i < 9; ++i) {
         delete[] squares[i];
+        for (int j = 0; j < 9; ++j) {
+            delete[] domain[i][j];
+        }
+        delete[] domain[i];
     }
     delete[] squares;
+    delete[] domain;
+
 }
 
 
@@ -87,5 +92,36 @@ void Sudoku::write(const int &value, const int &i, const int &j) {
 
 
 bool Sudoku::check_domain(const int &i, const int &j, const int &k) {
-    return domain[i][j][k];
+    return domain[i][j][k - 1];
+}
+
+
+void Sudoku::update_domains() {
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            int k;
+            for (k = 0; k < 9; ++k) {
+                domain[i][j][k] = true;
+            }
+            for (k = 0; k < 9; ++k) {
+                if (squares[k][j] > 0 && squares[k][j] < 10) {
+                    domain[i][j][(squares[k][j] - 1)] = false;
+                }
+            }
+            for (k = 0; k < 9; ++k) {
+                if (squares[i][k] > 0 && squares[i][k] < 10) {
+                    domain[i][j][(squares[i][k] - 1)] = false;
+                }
+            }
+            int group_x = i / 3;
+            int group_y = j / 3;
+            for (int x = group_x * 3; x < (group_x + 1) * 3; ++x) {
+                for (int y = group_y * 3; y < (group_y + 1) * 3; ++y) {
+                    if (squares[x][y] > 0 && squares[x][y] < 10) {
+                        domain[i][j][(squares[x][y] - 1)] = false;
+                    }
+                }
+            }
+        }
+    }
 }

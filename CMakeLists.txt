@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.6)
 project (Sudoku_AI)
 
 set (Sudoku_AI_VERSION_MAJOR 0)
-set (Sudoku_AI_VERSION_MINOR 1)
+set (Sudoku_AI_VERSION_MINOR 2)
 
 configure_file (
     "${PROJECT_SOURCE_DIR}/Sudoku_AIConfig.h.in"

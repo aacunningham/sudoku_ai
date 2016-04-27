@@ -1,6 +1,22 @@
 #include "sudoku.h"
 
 
+Sudoku::Sudoku() {
+    squares = new int*[9];
+    domain = new bool**[9];
+    for (int i = 0; i < 9; ++i) {
+        squares[i] = new int[9];
+        domain[i] = new bool*[9];
+        for (int j = 0; j < 9; ++j) {
+            squares[i][j] = 0;
+            domain[i][j] = new bool[9];
+            for (int k = 0; k < 9; ++k) {
+                domain[i][j][k] = false;
+            }
+        }
+    }
+}
+
 Sudoku::Sudoku(int** input) {
     squares = new int*[9];
     domain = new bool**[9];
@@ -51,6 +67,11 @@ bool Sudoku::operator==(const Sudoku &other) const {
         }
     }
     return equal;
+}
+
+
+bool Sudoku::operator!=(const Sudoku &other) const {
+    return !(*this == other);
 }
 
 

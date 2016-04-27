@@ -5,8 +5,12 @@ include_directories (
     ${Boost_INCLUDE_DIRS}
 )
 
+file (GLOB test_files
+    "*.cpp"
+)
+
 add_definitions (-DBOOST_TEST_DYN_LINK)
-add_executable (Test first_test.cpp)
+add_executable (Test ${test_files})
 target_link_libraries (
     Test
     ${Boost_FILESYSTEM_LIBRARY}

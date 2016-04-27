@@ -3,13 +3,14 @@
 
 class Sudoku {
 public:
+    Sudoku ();
     Sudoku (int** input);
-
     Sudoku (const Sudoku &input);
 
     ~Sudoku ();
 
     bool operator==(const Sudoku &other) const;
+    bool operator!=(const Sudoku &other) const;
 
     int read(const int &i, const int &j);
     void write(const int &value, const int &i, const int &j);

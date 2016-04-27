@@ -1,3 +1,6 @@
+#ifndef SUDOKU__H
+#define SUDOKU__H
+
 class Sudoku {
 public:
     Sudoku (int** input);
@@ -16,4 +19,7 @@ private:
     int** squares;
     bool*** domain;
 };
+
+
+#endif
 

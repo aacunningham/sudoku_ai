@@ -73,11 +73,17 @@ void Sudoku::write(const int& value, const int& i, const int& j) {
 
 
 bool Sudoku::check_domain(const int& i, const int& j, const int& k) {
+    if (modified) {
+        update_domains();
+    }
     return domains[i][j][k - 1];
 }
 
 
 void Sudoku::get_next_single_domain(int& x, int& y) {
+    if (modified) {
+        update_domains();
+    }
     x = -1; y = -1;
     for (int i = 0; i < 9; ++i) {
         for (int j = 0; j < 9; ++j) {

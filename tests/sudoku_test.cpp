@@ -64,7 +64,17 @@ BOOST_AUTO_TEST_CASE (sudoku_next_single) {
     test.get_next_single_domain(x, y);
     BOOST_CHECK(x == 0);
     BOOST_CHECK(y == 8);
-    input[0][0] = 100;
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            if (test.read(i,j) == 0) {
+                test.write(9, i, j);
+            }
+        }
+    }
+    BOOST_CHECK(test.is_valid());
+    test.get_next_single_domain(x, y);
+    BOOST_CHECK(x == -1);
+    BOOST_CHECK(y == -1);
 }
 
 BOOST_AUTO_TEST_CASE (sudoku_valid) {

@@ -13,6 +13,7 @@ Sudoku::Sudoku() {
             }
         }
     }
+    modified = false;
 }
 
 Sudoku::Sudoku(int** input) {
@@ -36,6 +37,7 @@ Sudoku::Sudoku (const Sudoku& input) {
             }
         }
     }
+    modified = false;
 }
 
 bool Sudoku::operator==(const Sudoku& other) const {
@@ -65,6 +67,7 @@ void Sudoku::write(const int& value, const int& i, const int& j) {
     if (value > 9 || value < 0)
         throw std::domain_error("Sudoku may only accept values 0 through 9");
     squares[i][j] = value;
+    modified = true;
     return;
 }
 
@@ -129,10 +132,15 @@ void Sudoku::update_domains() {
             }
         }
     }
+
+    modified = false;
 }
 
 
 bool Sudoku::is_valid() {
+    if (modified) {
+        update_domains();
+    }
     std::set<int> groups[9];
     std::set<int> rows[9];
     for (int i = 0; i < 9; ++i) {

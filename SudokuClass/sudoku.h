@@ -21,6 +21,8 @@ public:
 
     bool is_valid();
 
+    bool is_solved();
+
 private:
     int squares[9][9];
     bool domains[9][9][9];

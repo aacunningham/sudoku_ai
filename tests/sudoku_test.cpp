@@ -10,7 +10,7 @@ bool correct_message(const std::domain_error& ex) {
 }
 
 
-BOOST_FIXTURE_TEST_SUITE (sudoku_random, Random_Sudoku)
+BOOST_FIXTURE_TEST_SUITE (sudoku_random, Random_Sudoku);
 
 BOOST_AUTO_TEST_CASE (sudoku_constructors) {
     Sudoku test = Sudoku(input);
@@ -52,9 +52,9 @@ BOOST_AUTO_TEST_CASE (sudoku_domain) {
     BOOST_CHECK_MESSAGE(!(test.check_domain(2, 3, (2 * 3) % 10)), (2 * 3) % 10 );
 }
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END ();
 
-BOOST_FIXTURE_TEST_SUITE (sudoku_domains, Almost_Solved)
+BOOST_FIXTURE_TEST_SUITE (sudoku_domains, Almost_Solved);
 
 BOOST_AUTO_TEST_CASE (sudoku_next_single) {
     Sudoku test = Sudoku(input);
@@ -62,19 +62,8 @@ BOOST_AUTO_TEST_CASE (sudoku_next_single) {
     BOOST_CHECK(test.is_valid());
     int x, y;
     test.get_next_single_domain(x, y);
-    BOOST_CHECK(x == 0);
-    BOOST_CHECK(y == 8);
-    for (int i = 0; i < 9; ++i) {
-        for (int j = 0; j < 9; ++j) {
-            if (test.read(i,j) == 0) {
-                test.write(9, i, j);
-            }
-        }
-    }
-    BOOST_CHECK(test.is_valid());
-    test.get_next_single_domain(x, y);
-    BOOST_CHECK(x == -1);
-    BOOST_CHECK(y == -1);
+    BOOST_CHECK_EQUAL(x, 0);
+    BOOST_CHECK_EQUAL(y, 8);
 }
 
 BOOST_AUTO_TEST_CASE (sudoku_valid) {
@@ -89,5 +78,32 @@ BOOST_AUTO_TEST_CASE (sudoku_valid) {
     BOOST_CHECK(test2.is_valid());
 }
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END ();
 
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_domain_solved, Solved);
+
+BOOST_AUTO_TEST_CASE (sudoku_next_domain_solved) {
+    Sudoku test = Sudoku(input);
+    int x, y;
+    BOOST_CHECK(test.is_valid());
+    test.get_next_single_domain(x, y);
+    BOOST_CHECK_EQUAL(x, -1);
+    BOOST_CHECK_EQUAL(y, -1);
+}
+
+BOOST_AUTO_TEST_CASE (sudoku_is_solved) {
+    Sudoku test = Sudoku(input);
+    BOOST_CHECK(test.is_solved());
+
+    test.write(2,0,0);
+    BOOST_CHECK(!test.is_solved());
+
+    test.write(0,0,0);
+    BOOST_CHECK(!test.is_solved());
+
+    test.write(1,0,0);
+    BOOST_CHECK(test.is_solved());
+}
+
+BOOST_AUTO_TEST_SUITE_END ();

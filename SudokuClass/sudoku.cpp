@@ -188,3 +188,24 @@ bool Sudoku::is_valid() {
 
     return true;
 }
+
+
+bool Sudoku::is_solved() {
+    if (is_valid()) {
+        bool all_filled = true;
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                if (squares[i][j] == 0) {
+                    all_filled = false;
+                    break;
+                }
+            }
+            if (!all_filled) {
+                break;
+            }
+        }
+        return all_filled;
+    } else {
+        return false;
+    }
+}

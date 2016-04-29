@@ -31,6 +31,8 @@ public:
 
     bool is_solved();
 
+    bool solve();
+
 private:
     std::array<std::array<int, 9>, 9> squares;
     std::array<std::array<std::set<int>, 9>, 9> domains;

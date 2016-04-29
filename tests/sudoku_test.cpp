@@ -104,6 +104,11 @@ BOOST_AUTO_TEST_CASE (sudoku_is_solved) {
     BOOST_CHECK(test.is_solved());
 }
 
+BOOST_AUTO_TEST_CASE (sudoku_solve) {
+    Sudoku test = Sudoku(input);
+    BOOST_CHECK(test.solve());
+}
+
 BOOST_AUTO_TEST_SUITE_END ();
 
 
@@ -138,6 +143,20 @@ BOOST_AUTO_TEST_CASE (sudoku_next_domain_easy) {
     coordinates = test.get_next_n_domain(4);
     BOOST_CHECK_EQUAL(coordinates.first, 1);
     BOOST_CHECK_EQUAL(coordinates.second, 2);
+}
+
+BOOST_AUTO_TEST_CASE (sudoku_get_domain_easy) {
+    Sudoku test = Sudoku(input);
+    auto domain = test.get_domain(2, 6);
+    BOOST_CHECK_EQUAL(domain.count(1), 1);
+    BOOST_CHECK_EQUAL(domain.count(2), 1);
+    BOOST_CHECK_EQUAL(domain.count(3), 1);
+    BOOST_CHECK_EQUAL(domain.count(9), 1);
+}
+
+BOOST_AUTO_TEST_CASE (sudoku_solve_easy) {
+    Sudoku test = Sudoku(input);
+    BOOST_CHECK(test.solve());
 }
 
 BOOST_AUTO_TEST_SUITE_END ();

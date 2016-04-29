@@ -15,6 +15,8 @@ public:
     void write(const int& value, const int& i, const int& j);
     bool check_domain(const int& i, const int& j, const int& k);
 
+    void get_next_n_domain(const int& n, int& x, int& y);
+
     void get_next_single_domain(int& x, int& y);
 
     void update_domains();

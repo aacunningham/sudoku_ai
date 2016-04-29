@@ -80,7 +80,7 @@ bool Sudoku::check_domain(const int& i, const int& j, const int& k) {
 }
 
 
-void Sudoku::get_next_single_domain(int& x, int& y) {
+void Sudoku::get_next_n_domain(const int& n, int& x, int& y) {
     if (modified) {
         update_domains();
     }
@@ -93,13 +93,19 @@ void Sudoku::get_next_single_domain(int& x, int& y) {
                     ++count;
                 }
             }
-            if (count == 1) {
+            if (count == n) {
                 x = i; y = j;
                 return;
             }
         }
     }
 
+    return;
+}
+
+
+void Sudoku::get_next_single_domain(int& x, int& y) {
+    get_next_n_domain(1, x, y);
     return;
 }
 

@@ -11,6 +11,7 @@ file (GLOB test_files
 
 add_definitions (-DBOOST_TEST_DYN_LINK)
 add_executable (Test ${test_files})
+target_compile_features(Test PRIVATE cxx_uniform_initialization)
 target_link_libraries (
     Test
     ${Boost_FILESYSTEM_LIBRARY}

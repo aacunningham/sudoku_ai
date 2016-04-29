@@ -1,3 +1,4 @@
 add_library (Sudoku SHARED sudoku.cpp)
-target_compile_features(Sudoku PRIVATE cxx_auto_type)
+set_property(TARGET Sudoku PROPERTY CXX_STANDARD 11)
+set_property(TARGET Sudoku PROPERTY CXX_STANDARD_REQUIRED ON)
 

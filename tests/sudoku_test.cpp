@@ -60,10 +60,9 @@ BOOST_AUTO_TEST_CASE (sudoku_next_single) {
     Sudoku test = Sudoku(input);
     test.update_domains();
     BOOST_CHECK(test.is_valid());
-    int x, y;
-    test.get_next_single_domain(x, y);
-    BOOST_CHECK_EQUAL(x, 0);
-    BOOST_CHECK_EQUAL(y, 8);
+    auto coordinates = test.get_next_single_domain();
+    BOOST_CHECK_EQUAL(coordinates.first, 8);
+    BOOST_CHECK_EQUAL(coordinates.second, 0);
 }
 
 BOOST_AUTO_TEST_CASE (sudoku_valid) {
@@ -85,11 +84,10 @@ BOOST_FIXTURE_TEST_SUITE (sudoku_domain_solved, Solved);
 
 BOOST_AUTO_TEST_CASE (sudoku_next_domain_solved) {
     Sudoku test = Sudoku(input);
-    int x, y;
     BOOST_CHECK(test.is_valid());
-    test.get_next_single_domain(x, y);
-    BOOST_CHECK_EQUAL(x, -1);
-    BOOST_CHECK_EQUAL(y, -1);
+    auto coordinates = test.get_next_single_domain();
+    BOOST_CHECK_EQUAL(coordinates.first, -1);
+    BOOST_CHECK_EQUAL(coordinates.second, -1);
 }
 
 BOOST_AUTO_TEST_CASE (sudoku_is_solved) {
@@ -104,6 +102,42 @@ BOOST_AUTO_TEST_CASE (sudoku_is_solved) {
 
     test.write(1,0,0);
     BOOST_CHECK(test.is_solved());
+}
+
+BOOST_AUTO_TEST_SUITE_END ();
+
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_easy, Easy_Sudoku);
+
+BOOST_AUTO_TEST_CASE (sudoku_domain_easy) {
+    Sudoku test = Sudoku(input);
+    BOOST_CHECK(test.check_domain(5, 1, 0));
+    BOOST_CHECK(test.check_domain(7, 1, 0));
+    BOOST_CHECK(test.check_domain(1, 2, 1));
+    BOOST_CHECK(test.check_domain(2, 2, 1));
+    BOOST_CHECK(test.check_domain(5, 2, 1));
+    BOOST_CHECK(test.check_domain(8, 2, 1));
+    BOOST_CHECK(test.check_domain(9, 2, 1));
+}
+
+BOOST_AUTO_TEST_CASE (sudoku_next_domain_easy) {
+    Sudoku test = Sudoku(input);
+    BOOST_CHECK(test.is_valid());
+    auto coordinates = test.get_next_single_domain();
+    BOOST_CHECK_EQUAL(coordinates.first, 6);
+    BOOST_CHECK_EQUAL(coordinates.second, 4);
+
+    coordinates = test.get_next_n_domain(2);
+    BOOST_CHECK_EQUAL(coordinates.first, 1);
+    BOOST_CHECK_EQUAL(coordinates.second, 0);
+
+    coordinates = test.get_next_n_domain(3);
+    BOOST_CHECK_EQUAL(coordinates.first, 0);
+    BOOST_CHECK_EQUAL(coordinates.second, 1);
+
+    coordinates = test.get_next_n_domain(4);
+    BOOST_CHECK_EQUAL(coordinates.first, 1);
+    BOOST_CHECK_EQUAL(coordinates.second, 2);
 }
 
 BOOST_AUTO_TEST_SUITE_END ();

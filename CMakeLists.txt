@@ -20,4 +20,6 @@ set(needed_features
     cxx_uniform_initialization)
 
 add_executable (Sudoku_AI main.cpp)
+set_property(TARGET Sudoku_AI PROPERTY CXX_STANDARD 11)
+set_property(TARGET Sudoku_AI PROPERTY CXX_STANDARD_REQUIRED ON)
 target_link_libraries (Sudoku_AI Sudoku)

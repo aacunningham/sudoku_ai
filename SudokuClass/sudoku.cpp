@@ -1,68 +1,44 @@
+#include <set>
+#include <stdexcept>
 #include <iostream>
 #include "sudoku.h"
 
 
 Sudoku::Sudoku() {
-    squares = new int*[9];
-    domain = new bool**[9];
     for (int i = 0; i < 9; ++i) {
-        squares[i] = new int[9];
-        domain[i] = new bool*[9];
         for (int j = 0; j < 9; ++j) {
             squares[i][j] = 0;
-            domain[i][j] = new bool[9];
             for (int k = 0; k < 9; ++k) {
-                domain[i][j][k] = true;
+                domains[i][j][k] = true;
             }
         }
     }
 }
 
 Sudoku::Sudoku(int** input) {
-    squares = new int*[9];
-    domain = new bool**[9];
     for (int i = 0; i < 9; ++i) {
-        squares[i] = new int[9];
-        domain[i] = new bool*[9];
         for (int j = 0; j < 9; ++j) {
+            if (input[i][j] < 0 || input[i][j] > 9) {
+                throw std::domain_error("Sudoku may only accept values 0 through 9");
+            }
             squares[i][j] = input[i][j];
-            domain[i][j] = new bool[9];
         }
     }
     update_domains();
 }
 
-Sudoku::Sudoku (const Sudoku &input) {
-    squares = new int*[9];
-    domain = new bool**[9];
+Sudoku::Sudoku (const Sudoku& input) {
     for (int i = 0; i < 9; ++i){
-        squares[i] = new int[9];
-        domain[i] = new bool*[9];
         for (int j = 0; j < 9; ++j) {
             squares[i][j] = input.squares[i][j];
-            domain[i][j] = new bool[9];
             for (int k = 0; k < 9; ++k) {
-                domain[i][j][k] = input.domain[i][j][k];
+                domains[i][j][k] = input.domains[i][j][k];
             }
         }
     }
 }
 
-Sudoku::~Sudoku () {
-    for (int i = 0; i < 9; ++i) {
-        delete[] squares[i];
-        for (int j = 0; j < 9; ++j) {
-            delete[] domain[i][j];
-        }
-        delete[] domain[i];
-    }
-    delete[] squares;
-    delete[] domain;
-
-}
-
-
-bool Sudoku::operator==(const Sudoku &other) const {
+bool Sudoku::operator==(const Sudoku& other) const {
     bool equal = true;
     for (int i = 0; i < 9 && equal == true; ++i) {
         for (int j = 0; j < 9 && equal == true; ++j) {
@@ -75,44 +51,43 @@ bool Sudoku::operator==(const Sudoku &other) const {
 }
 
 
-bool Sudoku::operator!=(const Sudoku &other) const {
+bool Sudoku::operator!=(const Sudoku& other) const {
     return !(*this == other);
 }
 
 
-int Sudoku::read(const int &i, const int &j) {
+int Sudoku::read(const int& i, const int& j) {
     return squares[i][j];
 }
 
 
-void Sudoku::write(const int &value, const int &i, const int &j) {
+void Sudoku::write(const int& value, const int& i, const int& j) {
+    if (value > 9 || value < 0)
+        throw std::domain_error("Sudoku may only accept values 0 through 9");
     squares[i][j] = value;
     return;
 }
 
 
-bool Sudoku::check_domain(const int &i, const int &j, const int &k) {
-    return domain[i][j][k - 1];
+bool Sudoku::check_domain(const int& i, const int& j, const int& k) {
+    return domains[i][j][k - 1];
 }
 
 
-void Sudoku::get_next_single_domain(int &x, int &y) {
+void Sudoku::get_next_single_domain(int& x, int& y) {
     x = -1; y = -1;
     for (int i = 0; i < 9; ++i) {
         for (int j = 0; j < 9; ++j) {
             int count = 0;
             for (int k = 0; k < 9; ++k) {
-                if (domain[i][j][k]) {
+                if (domains[i][j][k]) {
                     ++count;
                 }
             }
             if (count == 1) {
                 x = i; y = j;
-                break;
+                return;
             }
-        }
-        if (x != -1) {
-            break;
         }
     }
 
@@ -124,22 +99,22 @@ void Sudoku::update_domains() {
     for (int i = 0; i < 9; ++i) {
         for (int j = 0; j < 9; ++j) {
             int k;
-            if (squares[i][j] == 0) {
+            if (squares[i][j] != 0) {
                 for (k = 0; k < 9; ++k) {
-                    domain[i][j][k] = false;
+                    domains[i][j][k] = false;
                 }
             } else {
                 for (k = 0; k < 9; ++k) {
-                    domain[i][j][k] = true;
+                    domains[i][j][k] = true;
                 }
                 for (k = 0; k < 9; ++k) {
                     if (squares[k][j] > 0 && squares[k][j] < 10) {
-                        domain[i][j][(squares[k][j] - 1)] = false;
+                        domains[i][j][(squares[k][j] - 1)] = false;
                     }
                 }
                 for (k = 0; k < 9; ++k) {
                     if (squares[i][k] > 0 && squares[i][k] < 10) {
-                        domain[i][j][(squares[i][k] - 1)] = false;
+                        domains[i][j][(squares[i][k] - 1)] = false;
                     }
                 }
                 int group_x = i / 3;
@@ -147,11 +122,55 @@ void Sudoku::update_domains() {
                 for (int x = group_x * 3; x < (group_x + 1) * 3; ++x) {
                     for (int y = group_y * 3; y < (group_y + 1) * 3; ++y) {
                         if (squares[x][y] > 0 && squares[x][y] < 10) {
-                            domain[i][j][(squares[x][y] - 1)] = false;
+                            domains[i][j][(squares[x][y] - 1)] = false;
                         }
                     }
                 }
             }
         }
     }
+}
+
+
+bool Sudoku::is_valid() {
+    std::set<int> groups[9];
+    std::set<int> rows[9];
+    for (int i = 0; i < 9; ++i) {
+        std::set<int> column;
+        for (int j = 0; j < 9; ++j) {
+            if (squares[i][j] == 0) {
+                bool at_least_one = false;
+                for (int k = 0; k < 9; ++k) {
+                    if (domains[i][j][k] == true) {
+                        at_least_one = true;
+                        break;
+                    }
+                }
+                if (!at_least_one) {
+                    return false;
+                }
+            } else {
+                if (column.count(squares[i][j]) == 1) {
+                    return false;
+                } else {
+                    column.insert(squares[i][j]);
+                }
+
+                if (rows[j].count(squares[i][j]) == 1) {
+                    return false;
+                } else {
+                    rows[j].insert(squares[i][j]);
+                }
+
+                int group_id = (i / 3) + (j / 3) * 3;
+                if (groups[group_id].count(squares[i][j]) == 1) {
+                    return false;
+                } else {
+                    groups[group_id].insert(squares[i][j]);
+                }
+            }
+        }
+    }
+
+    return true;
 }

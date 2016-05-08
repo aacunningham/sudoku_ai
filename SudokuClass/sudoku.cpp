@@ -86,6 +86,11 @@ std::set<int> Sudoku::get_domain(const int& x, const int& y) {
 }
 
 
+std::set<int> Sudoku::get_domain(const std::pair<int, int> coordinates) {
+    return domains[coordinates.second][coordinates.first];
+}
+
+
 std::pair<int, int> Sudoku::get_next_n_domain(const unsigned int& n) {
     if (modified) {
         update_domains();
@@ -214,14 +219,14 @@ bool Sudoku::is_solved() {
 }
 
 
-bool Sudoku::solve() {
+bool solve(Sudoku& sudoku) {
     while(true) {
-        auto coordinates = get_next_single_domain();
+        auto coordinates = sudoku.get_next_single_domain();
         if (coordinates.first == -1) {
             break;
         }
-        write(*domains[coordinates.second][coordinates.first].begin(), coordinates.first, coordinates.second);
+        sudoku.write(*sudoku.get_domain(coordinates).begin(), coordinates.first, coordinates.second);
     }
-    return is_solved();
+    return sudoku.is_solved();
 }
 

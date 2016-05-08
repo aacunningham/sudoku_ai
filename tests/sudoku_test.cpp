@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE (sudoku_is_solved) {
 
 BOOST_AUTO_TEST_CASE (sudoku_solve) {
     Sudoku test = Sudoku(input);
-    BOOST_CHECK(test.solve());
+    BOOST_CHECK(solve(test));
 }
 
 BOOST_AUTO_TEST_SUITE_END ();
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE (sudoku_get_domain_easy) {
 
 BOOST_AUTO_TEST_CASE (sudoku_solve_easy) {
     Sudoku test = Sudoku(input);
-    BOOST_CHECK(test.solve());
+    BOOST_CHECK(solve(test));
 }
 
 BOOST_AUTO_TEST_SUITE_END ();

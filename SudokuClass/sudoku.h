@@ -20,6 +20,7 @@ public:
     bool check_domain(const int& val, const int& x, const int& y);
 
     std::set<int> get_domain(const int& x, const int& y);
+    std::set<int> get_domain(const std::pair<int, int> coordinates);
 
     std::pair<int, int> get_next_n_domain(const unsigned int& n);
 
@@ -31,13 +32,14 @@ public:
 
     bool is_solved();
 
-    bool solve();
 
 private:
     std::array<std::array<int, 9>, 9> squares;
     std::array<std::array<std::set<int>, 9>, 9> domains;
     bool modified;
 };
+
+bool solve(Sudoku& sudoku);
 
 #endif
 

@@ -2,6 +2,7 @@
 #define SUDOKU__H
 
 #include <utility>
+#include <stack>
 #include <array>
 #include <set>
 
@@ -16,15 +17,18 @@ public:
     bool operator!=(const Sudoku& other) const;
 
     int read(const int& x, const int& y);
+    int read(const std::pair<int, int>& coordinates);
     void write(const int& value, const int& x, const int& y);
     bool check_domain(const int& val, const int& x, const int& y);
 
     std::set<int> get_domain(const int& x, const int& y);
-    std::set<int> get_domain(const std::pair<int, int> coordinates);
+    std::set<int> get_domain(const std::pair<int, int>& coordinates);
+
+    void set_domain(const std::set<int>& domain, const std::pair<int, int>& coordinates);
 
     std::pair<int, int> get_next_n_domain(const unsigned int& n);
-
     std::pair<int, int> get_next_single_domain();
+    std::pair<int, int> get_next_empty_square();
 
     void update_domains();
 
@@ -32,12 +36,12 @@ public:
 
     bool is_solved();
 
-
 private:
     std::array<std::array<int, 9>, 9> squares;
     std::array<std::array<std::set<int>, 9>, 9> domains;
     bool modified;
 };
+
 
 bool solve(Sudoku& sudoku);
 

@@ -24,6 +24,9 @@ Sudoku::Sudoku(int** input) {
                 throw std::domain_error("Sudoku may only accept values 0 through 9");
             }
             squares[y][x] = input[y][x];
+            for (int k = 1; k < 10; ++k) {
+                domains[y][x].insert(k);
+            }
         }
     }
     update_domains();
@@ -64,6 +67,11 @@ int Sudoku::read(const int& x, const int& y) {
 }
 
 
+int Sudoku::read(const std::pair<int, int>& coordinates) {
+    return squares[coordinates.second][coordinates.first];
+}
+
+
 void Sudoku::write(const int& value, const int& x, const int& y) {
     if (value > 9 || value < 0)
         throw std::domain_error("Sudoku may only accept values 0 through 9");
@@ -86,8 +94,13 @@ std::set<int> Sudoku::get_domain(const int& x, const int& y) {
 }
 
 
-std::set<int> Sudoku::get_domain(const std::pair<int, int> coordinates) {
+std::set<int> Sudoku::get_domain(const std::pair<int, int>& coordinates) {
     return domains[coordinates.second][coordinates.first];
+}
+
+
+void Sudoku::set_domain(const std::set<int>& domain, const std::pair<int, int>& coordinates) {
+    domains[coordinates.second][coordinates.first] = domain;
 }
 
 
@@ -112,6 +125,22 @@ std::pair<int, int> Sudoku::get_next_single_domain() {
 }
 
 
+std::pair<int, int> Sudoku::get_next_empty_square() {
+    if (modified) {
+        update_domains();
+    }
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            if (domains[i][j].size() > 0) {
+                return std::pair<int, int>(j, i);
+            }
+        }
+    }
+
+    return std::pair<int, int>(-1, -1);
+}
+
+
 void Sudoku::update_domains() {
     for (int y = 0; y < 9; ++y) {
         for (int x = 0; x < 9; ++x) {
@@ -121,9 +150,6 @@ void Sudoku::update_domains() {
                     domains[y][x].clear();
                 }
             } else {
-                for (k = 1; k < 10; ++k) {
-                    domains[y][x].insert(k);
-                }
                 for (k = 0; k < 9; ++k) {
                     if (squares[k][x] > 0 && squares[k][x] < 10) {
                         domains[y][x].erase(squares[k][x]);
@@ -220,12 +246,41 @@ bool Sudoku::is_solved() {
 
 
 bool solve(Sudoku& sudoku) {
+    if (!sudoku.is_valid()) {
+        return false;
+    }
+    std::stack<std::pair<Sudoku, std::pair<int, int>>> history;
     while(true) {
-        auto coordinates = sudoku.get_next_single_domain();
-        if (coordinates.first == -1) {
-            break;
+        sudoku.update_domains();
+        if (!sudoku.is_valid()) {
+            auto previous_sudoku = history.top().first;
+            auto wrong_coordinates = history.top().second;
+            int wrong_value = sudoku.read(wrong_coordinates);
+            // std::cout << "Bad guess: " << wrong_value << " (" << wrong_coordinates.first << ',' << wrong_coordinates.second << ")\n";
+            sudoku = previous_sudoku;
+            auto domain = sudoku.get_domain(wrong_coordinates);
+            domain.erase(wrong_value);
+            sudoku.set_domain(domain, wrong_coordinates);
+            history.pop();
         }
-        sudoku.write(*sudoku.get_domain(coordinates).begin(), coordinates.first, coordinates.second);
+        auto coordinates = sudoku.get_next_single_domain();
+        if (coordinates.first != -1) {
+            // std::cout << "Found single domain: " << coordinates.first << ',' << coordinates.second << ' ';
+            int first_val = *(sudoku.get_domain(coordinates).begin());
+            // std::cout << "Writing " << *sudoku.get_domain(coordinates).begin() << std::endl;
+            sudoku.write(first_val, coordinates.first, coordinates.second);
+        } else {
+            coordinates = sudoku.get_next_empty_square();
+            if (coordinates.first != -1) {
+                // std::cout << "Making a guess: " << coordinates.first << ',' << coordinates.second << ' ';
+                history.push(std::pair<Sudoku, std::pair<int, int>>(sudoku, coordinates));
+                int first_val = *(sudoku.get_domain(coordinates).begin());
+                // std::cout << "Writing " << first_val << std::endl;
+                sudoku.write(first_val, coordinates.first, coordinates.second);
+            } else {
+                break;
+            }
+        }
     }
     return sudoku.is_solved();
 }

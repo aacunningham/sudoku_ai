@@ -91,3 +91,75 @@ public:
     int** input;
 };
 
+class Easy_Sudoku_1 {
+public:
+    Easy_Sudoku_1() {
+        input = new int*[9];
+        input[8] = new int[9] {3,0,8,0,0,0,9,0,5};
+        input[7] = new int[9] {0,0,0,3,0,7,0,0,0};
+        input[6] = new int[9] {1,0,4,0,2,0,8,0,6};
+        input[5] = new int[9] {0,8,0,0,4,0,0,5,0};
+        input[4] = new int[9] {0,0,3,2,0,5,6,0,0};
+        input[3] = new int[9] {0,6,0,0,3,0,0,9,0};
+        input[2] = new int[9] {6,0,1,0,7,0,3,0,4};
+        input[1] = new int[9] {0,0,0,6,0,4,0,0,0};
+        input[0] = new int[9] {9,0,2,0,0,0,7,0,1};
+    }
+    ~Easy_Sudoku_1() {
+        for (int i = 0; i < 9; ++i) {
+            delete[] input[i];
+        }
+        delete[] input;
+    }
+
+    int** input;
+};
+
+class Medium_Sudoku_1 {
+public:
+    Medium_Sudoku_1() {
+        input = new int*[9];
+        input[8] = new int[9] {0,6,4,9,0,0,7,0,0};
+        input[7] = new int[9] {0,0,0,0,0,0,0,0,8};
+        input[6] = new int[9] {0,2,0,0,6,0,0,0,0};
+        input[5] = new int[9] {0,7,0,0,0,8,0,5,0};
+        input[4] = new int[9] {0,0,0,0,3,0,0,0,0};
+        input[3] = new int[9] {8,4,2,0,0,0,0,1,0};
+        input[2] = new int[9] {0,0,0,6,0,0,3,0,0};
+        input[1] = new int[9] {0,0,0,0,4,0,9,0,0};
+        input[0] = new int[9] {1,8,0,0,0,0,0,0,0};
+    }
+    ~Medium_Sudoku_1() {
+        for (int i = 0; i < 9; ++i) {
+            delete[] input[i];
+        }
+        delete[] input;
+    }
+
+    int** input;
+};
+
+class Hard_Sudoku_1 {
+public:
+    Hard_Sudoku_1() {
+        input = new int*[9];
+        input[8] = new int[9] {0,5,0,1,8,0,0,6,0};
+        input[7] = new int[9] {3,0,1,7,6,0,0,0,5};
+        input[6] = new int[9] {0,9,0,0,0,0,0,0,3};
+        input[5] = new int[9] {9,0,0,2,0,0,0,4,0};
+        input[4] = new int[9] {0,0,0,0,3,0,6,0,0};
+        input[3] = new int[9] {1,0,0,0,0,0,0,0,0};
+        input[2] = new int[9] {0,0,3,0,0,8,0,0,7};
+        input[1] = new int[9] {0,0,0,0,0,0,0,5,8};
+        input[0] = new int[9] {0,2,0,0,0,0,3,0,0};
+    }
+    ~Hard_Sudoku_1() {
+        for (int i = 0; i < 9; ++i) {
+            delete[] input[i];
+        }
+        delete[] input;
+    }
+
+    int** input;
+};
+

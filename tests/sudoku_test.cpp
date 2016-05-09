@@ -160,3 +160,30 @@ BOOST_AUTO_TEST_CASE (sudoku_solve_easy) {
 }
 
 BOOST_AUTO_TEST_SUITE_END ();
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_easy_1, Easy_Sudoku_1);
+
+BOOST_AUTO_TEST_CASE (sudoku_solve_easy_1) {
+    Sudoku test = Sudoku(input);
+    BOOST_CHECK(solve(test));
+}
+
+BOOST_AUTO_TEST_SUITE_END ();
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_medium_1, Medium_Sudoku_1);
+
+BOOST_AUTO_TEST_CASE (sudoku_solve_medium_1) {
+    Sudoku test = Sudoku(input);
+    BOOST_CHECK(solve(test));
+}
+
+BOOST_AUTO_TEST_SUITE_END ();
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_hard_1, Hard_Sudoku_1);
+
+BOOST_AUTO_TEST_CASE (sudoku_solve_hard_1) {
+    Sudoku test = Sudoku(input);
+    BOOST_CHECK(solve(test));
+}
+
+BOOST_AUTO_TEST_SUITE_END ();

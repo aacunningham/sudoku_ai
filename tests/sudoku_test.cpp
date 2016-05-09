@@ -1,7 +1,8 @@
 #define BOOST_TEST_MODULE Sudoku_Test
+#include <boost/test/unit_test.hpp>
 #include "fixtures.h"
 #include "../SudokuClass/sudoku.h"
-#include <boost/test/unit_test.hpp>
+#include <iostream>
 
 
 bool correct_message(const std::domain_error& ex) {
@@ -106,15 +107,19 @@ BOOST_AUTO_TEST_CASE (sudoku_is_solved) {
 
 BOOST_AUTO_TEST_CASE (sudoku_solve) {
     Sudoku test = Sudoku(input);
-    BOOST_CHECK(solve(test));
+    std::chrono::duration<double> time;
+    int backtracks;
+    BOOST_CHECK(solve(test, backtracks, time));
+
+    std::cout << "Almost Solved Sudoku: " << time.count() << "s, " << backtracks << " backtracks\n";
 }
 
 BOOST_AUTO_TEST_SUITE_END ();
 
 
-BOOST_FIXTURE_TEST_SUITE (sudoku_easy, Easy_Sudoku);
+BOOST_FIXTURE_TEST_SUITE (sudoku_easy_1, Easy_Sudoku_1);
 
-BOOST_AUTO_TEST_CASE (sudoku_domain_easy) {
+BOOST_AUTO_TEST_CASE (sudoku_domain_easy_1) {
     Sudoku test = Sudoku(input);
     BOOST_CHECK(test.check_domain(5, 1, 0));
     BOOST_CHECK(test.check_domain(7, 1, 0));
@@ -125,7 +130,7 @@ BOOST_AUTO_TEST_CASE (sudoku_domain_easy) {
     BOOST_CHECK(test.check_domain(9, 2, 1));
 }
 
-BOOST_AUTO_TEST_CASE (sudoku_next_domain_easy) {
+BOOST_AUTO_TEST_CASE (sudoku_next_domain_easy_1) {
     Sudoku test = Sudoku(input);
     BOOST_CHECK(test.is_valid());
     auto coordinates = test.get_next_single_domain();
@@ -145,7 +150,7 @@ BOOST_AUTO_TEST_CASE (sudoku_next_domain_easy) {
     BOOST_CHECK_EQUAL(coordinates.second, 2);
 }
 
-BOOST_AUTO_TEST_CASE (sudoku_get_domain_easy) {
+BOOST_AUTO_TEST_CASE (sudoku_get_domain_easy_1) {
     Sudoku test = Sudoku(input);
     auto domain = test.get_domain(2, 6);
     BOOST_CHECK_EQUAL(domain.count(1), 1);
@@ -154,18 +159,26 @@ BOOST_AUTO_TEST_CASE (sudoku_get_domain_easy) {
     BOOST_CHECK_EQUAL(domain.count(9), 1);
 }
 
-BOOST_AUTO_TEST_CASE (sudoku_solve_easy) {
+BOOST_AUTO_TEST_CASE (sudoku_solve_easy_1) {
     Sudoku test = Sudoku(input);
-    BOOST_CHECK(solve(test));
+    std::chrono::duration<double> time;
+    int backtracks;
+    BOOST_CHECK(solve(test, backtracks, time));
+
+    std::cout << "Easy Sudoku: " << time.count() << "s, " << backtracks << " backtracks\n";
 }
 
 BOOST_AUTO_TEST_SUITE_END ();
 
-BOOST_FIXTURE_TEST_SUITE (sudoku_easy_1, Easy_Sudoku_1);
+BOOST_FIXTURE_TEST_SUITE (sudoku_easy_2, Easy_Sudoku_2);
 
-BOOST_AUTO_TEST_CASE (sudoku_solve_easy_1) {
+BOOST_AUTO_TEST_CASE (sudoku_solve_easy_2) {
     Sudoku test = Sudoku(input);
-    BOOST_CHECK(solve(test));
+    std::chrono::duration<double> time;
+    int backtracks;
+    BOOST_CHECK(solve(test, backtracks, time));
+
+    std::cout << "Easy_1 Sudoku: " << time.count() << "s, " << backtracks << " backtracks\n";
 }
 
 BOOST_AUTO_TEST_SUITE_END ();
@@ -174,7 +187,11 @@ BOOST_FIXTURE_TEST_SUITE (sudoku_medium_1, Medium_Sudoku_1);
 
 BOOST_AUTO_TEST_CASE (sudoku_solve_medium_1) {
     Sudoku test = Sudoku(input);
-    BOOST_CHECK(solve(test));
+    std::chrono::duration<double> time;
+    int backtracks;
+    BOOST_CHECK(solve(test, backtracks, time));
+
+    std::cout << "Medium Sudoku: " << time.count() << "s, " << backtracks << " backtracks\n";
 }
 
 BOOST_AUTO_TEST_SUITE_END ();
@@ -183,7 +200,51 @@ BOOST_FIXTURE_TEST_SUITE (sudoku_hard_1, Hard_Sudoku_1);
 
 BOOST_AUTO_TEST_CASE (sudoku_solve_hard_1) {
     Sudoku test = Sudoku(input);
-    BOOST_CHECK(solve(test));
+    std::chrono::duration<double> time;
+    int backtracks;
+    BOOST_CHECK(solve(test, backtracks, time));
+
+    std::cout << "Hard Sudoku: " << time.count() << "s, " << backtracks << " backtracks\n";
+}
+
+BOOST_AUTO_TEST_CASE (sudoku_find_all_solutions) {
+    Sudoku test = Sudoku(input);
+    int solutions = find_all_solutions(test);
+    std::cout << "Hard Sudoku: " << solutions << " solutions\n";
 }
 
 BOOST_AUTO_TEST_SUITE_END ();
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_ai, AI_Sudoku);
+
+BOOST_AUTO_TEST_CASE (sudoku_solve_ai) {
+    Sudoku test = Sudoku(input);
+    std::chrono::duration<double> time;
+    int backtracks;
+    BOOST_CHECK(solve(test, backtracks, time));
+
+    std::cout << "AI Sudoku: " << time.count() << "s, " << backtracks << " backtracks\n";
+}
+
+BOOST_AUTO_TEST_SUITE_END ();
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_multi_solution_1, Multi_Solution_Sudoku_1);
+
+BOOST_AUTO_TEST_CASE (sudoku_find_all_solutions_multi_1) {
+    Sudoku test = Sudoku(input);
+    int solutions = find_all_solutions(test);
+    std::cout << "Multi Sudoku: " << solutions << " solutions\n";
+}
+
+BOOST_AUTO_TEST_SUITE_END ();
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_multi_solution_2, Multi_Solution_Sudoku_2);
+
+BOOST_AUTO_TEST_CASE (sudoku_find_all_solutions_multi_2) {
+    Sudoku test = Sudoku(input);
+    int solutions = find_all_solutions(test);
+    std::cout << "Multi Sudoku: " << solutions << " solutions\n";
+}
+
+BOOST_AUTO_TEST_SUITE_END ();
+

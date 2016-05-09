@@ -2,6 +2,8 @@
 #define SUDOKU__H
 
 #include <utility>
+#include <vector>
+#include <chrono>
 #include <stack>
 #include <array>
 #include <set>
@@ -10,11 +12,13 @@
 class Sudoku {
 public:
     Sudoku ();
-    Sudoku (int** input);
+    Sudoku (int** input, int size = 9);
     Sudoku (const Sudoku& input);
 
     bool operator==(const Sudoku& other) const;
     bool operator!=(const Sudoku& other) const;
+
+    int get_dimension() const { return dimension;}
 
     int read(const int& x, const int& y);
     int read(const std::pair<int, int>& coordinates);
@@ -37,13 +41,15 @@ public:
     bool is_solved();
 
 private:
-    std::array<std::array<int, 9>, 9> squares;
-    std::array<std::array<std::set<int>, 9>, 9> domains;
+    int dimension;
+    std::vector<std::vector<int>> squares;
+    std::vector<std::vector<std::set<int>>> domains;
     bool modified;
 };
 
 
-bool solve(Sudoku& sudoku);
+bool solve(Sudoku& sudoku, int& backtracksOUT, std::chrono::duration<double>& timeOUT);
+int find_all_solutions(Sudoku& sudoku);
 
 #endif
 

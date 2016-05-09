@@ -1,3 +1,7 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
 class Solved {
 public:
     Solved() {
@@ -67,21 +71,28 @@ public:
     int** input;
 };
 
-class Easy_Sudoku {
+class Easy_Sudoku_1 {
 public:
-    Easy_Sudoku() {
+    Easy_Sudoku_1() {
         input = new int*[9];
-        input[8] = new int[9] {5,0,7,0,0,0,3,0,6};
-        input[7] = new int[9] {0,0,0,6,9,5,0,0,0};
-        input[6] = new int[9] {8,0,0,0,0,0,0,0,4};
-        input[5] = new int[9] {0,4,0,0,7,0,0,1,0};
-        input[4] = new int[9] {0,9,0,5,0,4,0,7,0};
-        input[3] = new int[9] {0,1,0,0,6,0,0,8,0};
-        input[2] = new int[9] {4,0,0,0,0,0,0,0,9};
-        input[1] = new int[9] {0,0,0,3,4,7,0,0,0};
-        input[0] = new int[9] {3,0,6,0,0,0,2,0,8};
+        std::ifstream fixture_data ("tests/test_fixture_data.txt", std::ios::in);
+        if (fixture_data.is_open()) {
+            std::string str;
+            while (std::getline(fixture_data, str)) {
+                if (str.find("[EASY_1]", 0) != std::string::npos) {
+                    break;
+                }
+            }
+            for (int i = 8; i >= 0; --i) {
+                int* temp = new int[9];
+                for (int j = 0; j < 9; ++j) {
+                    fixture_data >> temp[j];
+                }
+                input[i] = temp;
+            }
+        }
     }
-    ~Easy_Sudoku() {
+    ~Easy_Sudoku_1() {
         for (int i = 0; i < 9; ++i) {
             delete[] input[i];
         }
@@ -91,21 +102,28 @@ public:
     int** input;
 };
 
-class Easy_Sudoku_1 {
+class Easy_Sudoku_2 {
 public:
-    Easy_Sudoku_1() {
+    Easy_Sudoku_2() {
         input = new int*[9];
-        input[8] = new int[9] {3,0,8,0,0,0,9,0,5};
-        input[7] = new int[9] {0,0,0,3,0,7,0,0,0};
-        input[6] = new int[9] {1,0,4,0,2,0,8,0,6};
-        input[5] = new int[9] {0,8,0,0,4,0,0,5,0};
-        input[4] = new int[9] {0,0,3,2,0,5,6,0,0};
-        input[3] = new int[9] {0,6,0,0,3,0,0,9,0};
-        input[2] = new int[9] {6,0,1,0,7,0,3,0,4};
-        input[1] = new int[9] {0,0,0,6,0,4,0,0,0};
-        input[0] = new int[9] {9,0,2,0,0,0,7,0,1};
+        std::ifstream fixture_data ("tests/test_fixture_data.txt", std::ios::in);
+        if (fixture_data.is_open()) {
+            std::string str;
+            while (std::getline(fixture_data, str)) {
+                if (str.find("[EASY_2]", 0) != std::string::npos) {
+                    break;
+                }
+            }
+            for (int i = 8; i >= 0; --i) {
+                int* temp = new int[9];
+                for (int j = 0; j < 9; ++j) {
+                    fixture_data >> temp[j];
+                }
+                input[i] = temp;
+            }
+        }
     }
-    ~Easy_Sudoku_1() {
+    ~Easy_Sudoku_2() {
         for (int i = 0; i < 9; ++i) {
             delete[] input[i];
         }
@@ -119,15 +137,22 @@ class Medium_Sudoku_1 {
 public:
     Medium_Sudoku_1() {
         input = new int*[9];
-        input[8] = new int[9] {0,6,4,9,0,0,7,0,0};
-        input[7] = new int[9] {0,0,0,0,0,0,0,0,8};
-        input[6] = new int[9] {0,2,0,0,6,0,0,0,0};
-        input[5] = new int[9] {0,7,0,0,0,8,0,5,0};
-        input[4] = new int[9] {0,0,0,0,3,0,0,0,0};
-        input[3] = new int[9] {8,4,2,0,0,0,0,1,0};
-        input[2] = new int[9] {0,0,0,6,0,0,3,0,0};
-        input[1] = new int[9] {0,0,0,0,4,0,9,0,0};
-        input[0] = new int[9] {1,8,0,0,0,0,0,0,0};
+        std::ifstream fixture_data ("tests/test_fixture_data.txt", std::ios::in);
+        if (fixture_data.is_open()) {
+            std::string str;
+            while (std::getline(fixture_data, str)) {
+                if (str.find("[MEDIUM_1]", 0) != std::string::npos) {
+                    break;
+                }
+            }
+            for (int i = 8; i >= 0; --i) {
+                int* temp = new int[9];
+                for (int j = 0; j < 9; ++j) {
+                    fixture_data >> temp[j];
+                }
+                input[i] = temp;
+            }
+        }
     }
     ~Medium_Sudoku_1() {
         for (int i = 0; i < 9; ++i) {
@@ -143,17 +168,117 @@ class Hard_Sudoku_1 {
 public:
     Hard_Sudoku_1() {
         input = new int*[9];
-        input[8] = new int[9] {0,5,0,1,8,0,0,6,0};
-        input[7] = new int[9] {3,0,1,7,6,0,0,0,5};
-        input[6] = new int[9] {0,9,0,0,0,0,0,0,3};
-        input[5] = new int[9] {9,0,0,2,0,0,0,4,0};
-        input[4] = new int[9] {0,0,0,0,3,0,6,0,0};
-        input[3] = new int[9] {1,0,0,0,0,0,0,0,0};
-        input[2] = new int[9] {0,0,3,0,0,8,0,0,7};
-        input[1] = new int[9] {0,0,0,0,0,0,0,5,8};
-        input[0] = new int[9] {0,2,0,0,0,0,3,0,0};
+        std::ifstream fixture_data ("tests/test_fixture_data.txt", std::ios::in);
+        if (fixture_data.is_open()) {
+            std::string str;
+            while (std::getline(fixture_data, str)) {
+                if (str.find("[HARD_1]", 0) != std::string::npos) {
+                    break;
+                }
+            }
+            for (int i = 8; i >= 0; --i) {
+                int* temp = new int[9];
+                for (int j = 0; j < 9; ++j) {
+                    fixture_data >> temp[j];
+                }
+                input[i] = temp;
+            }
+        }
     }
     ~Hard_Sudoku_1() {
+        for (int i = 0; i < 9; ++i) {
+            delete[] input[i];
+        }
+        delete[] input;
+    }
+
+    int** input;
+};
+
+class AI_Sudoku {
+public:
+    AI_Sudoku() {
+        input = new int*[9];
+        std::ifstream fixture_data ("tests/test_fixture_data.txt", std::ios::in);
+        if (fixture_data.is_open()) {
+            std::string str;
+            while (std::getline(fixture_data, str)) {
+                if (str.find("[AI]", 0) != std::string::npos) {
+                    break;
+                }
+            }
+            for (int i = 8; i >= 0; --i) {
+                int* temp = new int[9];
+                for (int j = 0; j < 9; ++j) {
+                    fixture_data >> temp[j];
+                }
+                input[i] = temp;
+            }
+        }
+    }
+    ~AI_Sudoku() {
+        for (int i = 0; i < 9; ++i) {
+            delete[] input[i];
+        }
+        delete[] input;
+    }
+
+    int** input;
+};
+
+class Multi_Solution_Sudoku_1 {
+public:
+    Multi_Solution_Sudoku_1() {
+        input = new int*[9];
+        std::ifstream fixture_data ("tests/test_fixture_data.txt", std::ios::in);
+        if (fixture_data.is_open()) {
+            std::string str;
+            while (std::getline(fixture_data, str)) {
+                if (str.find("[MULTI_SOLUTION_1]", 0) != std::string::npos) {
+                    break;
+                }
+            }
+            for (int i = 8; i >= 0; --i) {
+                int* temp = new int[9];
+                for (int j = 0; j < 9; ++j) {
+                    fixture_data >> temp[j];
+                }
+                input[i] = temp;
+            }
+        }
+    }
+    ~Multi_Solution_Sudoku_1() {
+        for (int i = 0; i < 9; ++i) {
+            delete[] input[i];
+        }
+        delete[] input;
+    }
+
+    int** input;
+};
+
+class Multi_Solution_Sudoku_2 {
+public:
+    Multi_Solution_Sudoku_2() {
+        input = new int*[9];
+        std::ifstream fixture_data ("tests/test_fixture_data.txt", std::ios::in);
+        if (fixture_data.is_open()) {
+            std::string str;
+            while (std::getline(fixture_data, str)) {
+                if (str.find("[MULTI_SOLUTION_2]", 0) != std::string::npos) {
+                    break;
+                }
+            }
+            for (int i = 8; i >= 0; --i) {
+                int* temp = new int[9];
+                for (int j = 0; j < 9; ++j) {
+                    fixture_data >> temp[j];
+                }
+                input[i] = temp;
+            }
+        }
+    }
+    ~Multi_Solution_Sudoku_2() {
         for (int i = 0; i < 9; ++i) {
             delete[] input[i];
         }

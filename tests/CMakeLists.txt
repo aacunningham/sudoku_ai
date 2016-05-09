@@ -6,7 +6,13 @@ include_directories (
 )
 
 file (GLOB test_files
+    "*.h"
     "*.cpp"
+)
+
+file (COPY
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_fixture_data.txt
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/
 )
 
 add_definitions (-DBOOST_TEST_DYN_LINK)

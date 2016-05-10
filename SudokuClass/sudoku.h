@@ -11,7 +11,7 @@
 
 class Sudoku {
 public:
-    Sudoku ();
+    Sudoku (int size = 9);
     Sudoku (int** input, int size = 9);
     Sudoku (const Sudoku& input);
 

@@ -5,8 +5,8 @@
 #include <iostream>
 
 
-bool correct_message(const std::domain_error& ex) {
-    BOOST_CHECK_EQUAL(ex.what(), std::string("Sudoku may only accept values 0 through 9"));
+bool wrong_size(const std::invalid_argument& ex) {
+    BOOST_CHECK_EQUAL(ex.what(), std::string("Size of Sudoku puzzle must be a perfect square"));
     return true;
 }
 
@@ -28,12 +28,18 @@ BOOST_AUTO_TEST_CASE (sudoku_constructors) {
         }
     }
 
-    Sudoku test4 = Sudoku(input);
-
-    input[0][0] = 100;
-    BOOST_CHECK_EXCEPTION(test4 = Sudoku(input), std::domain_error, correct_message);
+    Sudoku test3 = Sudoku(input);
 
     BOOST_CHECK(test2 == test);
+
+    Sudoku test4;
+    Sudoku test5(9);
+    BOOST_CHECK(test4 == test5);
+
+    test4 = Sudoku(16);
+
+    Sudoku test6;
+    BOOST_CHECK_EXCEPTION(test6 = Sudoku(12), std::invalid_argument, wrong_size);
 }
 
 BOOST_AUTO_TEST_CASE (sudoku_write) {
@@ -43,8 +49,6 @@ BOOST_AUTO_TEST_CASE (sudoku_write) {
     BOOST_CHECK(test == test2);
     test.write(8, 3, 4);
     BOOST_CHECK(test != test2);
-    BOOST_CHECK_EXCEPTION(test.write(10, 3, 4), std::domain_error, correct_message);
-    BOOST_CHECK_EXCEPTION(test.write(-1, 3, 4), std::domain_error, correct_message);
 }
 
 BOOST_AUTO_TEST_CASE (sudoku_domain) {
@@ -178,7 +182,27 @@ BOOST_AUTO_TEST_CASE (sudoku_solve_easy_2) {
     int backtracks;
     BOOST_CHECK(solve(test, backtracks, time));
 
-    std::cout << "Easy_1 Sudoku: " << time.count() << "s, " << backtracks << " backtracks\n";
+    std::cout << "Easy_2 Sudoku: " << time.count() << "s, " << backtracks << " backtracks\n";
+}
+
+BOOST_AUTO_TEST_SUITE_END ();
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_easy_3, Easy_Sudoku_3);
+
+BOOST_AUTO_TEST_CASE (sudoku_solve_easy_3) {
+    Sudoku test = Sudoku(input);
+    std::chrono::duration<double> time;
+    int backtracks;
+    BOOST_CHECK(solve(test, backtracks, time));
+
+    std::cout << "Easy_3 Sudoku: " << time.count() << "s, " << backtracks << " backtracks\n";
+
+    for (int i = 8; i >= 0; --i) {
+        for (int j = 0; j < 9; ++j) {
+            std::cout << test.read(j, i) << ' ';
+        }
+        std::cout << '\n';
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END ();
@@ -244,6 +268,32 @@ BOOST_AUTO_TEST_CASE (sudoku_find_all_solutions_multi_2) {
     Sudoku test = Sudoku(input);
     int solutions = find_all_solutions(test);
     std::cout << "Multi Sudoku: " << solutions << " solutions\n";
+}
+
+BOOST_AUTO_TEST_SUITE_END ();
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_size_4_1, Size_4_Sudoku_1);
+
+BOOST_AUTO_TEST_CASE (sudoku_size_4_solve) {
+    Sudoku test = Sudoku(input, 4);
+    std::chrono::duration<double> time;
+    int backtracks;
+    BOOST_CHECK(solve(test, backtracks, time));
+
+    std::cout << "Size 4 Sudoku 1: " << time.count() << "s, " << backtracks << " backtracks\n";
+}
+
+BOOST_AUTO_TEST_SUITE_END ();
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_size_16_1, Size_16_Sudoku_1);
+
+BOOST_AUTO_TEST_CASE (sudoku_size_16_solve) {
+    Sudoku test = Sudoku(input, 16);
+    std::chrono::duration<double> time;
+    int backtracks;
+    BOOST_CHECK(solve(test, backtracks, time));
+
+    std::cout << "Size 16 Sudoku 1: " << time.count() << "s, " << backtracks << " backtracks\n";
 }
 
 BOOST_AUTO_TEST_SUITE_END ();

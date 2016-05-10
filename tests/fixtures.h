@@ -133,6 +133,37 @@ public:
     int** input;
 };
 
+class Easy_Sudoku_3 {
+public:
+    Easy_Sudoku_3() {
+        input = new int*[9];
+        std::ifstream fixture_data ("tests/test_fixture_data.txt", std::ios::in);
+        if (fixture_data.is_open()) {
+            std::string str;
+            while (std::getline(fixture_data, str)) {
+                if (str.find("[EASY_3]", 0) != std::string::npos) {
+                    break;
+                }
+            }
+            for (int i = 8; i >= 0; --i) {
+                int* temp = new int[9];
+                for (int j = 0; j < 9; ++j) {
+                    fixture_data >> temp[j];
+                }
+                input[i] = temp;
+            }
+        }
+    }
+    ~Easy_Sudoku_3() {
+        for (int i = 0; i < 9; ++i) {
+            delete[] input[i];
+        }
+        delete[] input;
+    }
+
+    int** input;
+};
+
 class Medium_Sudoku_1 {
 public:
     Medium_Sudoku_1() {
@@ -280,6 +311,68 @@ public:
     }
     ~Multi_Solution_Sudoku_2() {
         for (int i = 0; i < 9; ++i) {
+            delete[] input[i];
+        }
+        delete[] input;
+    }
+
+    int** input;
+};
+
+class Size_4_Sudoku_1 {
+public:
+    Size_4_Sudoku_1() {
+        input = new int*[4];
+        std::ifstream fixture_data ("tests/test_fixture_data.txt", std::ios::in);
+        if (fixture_data.is_open()) {
+            std::string str;
+            while (std::getline(fixture_data, str)) {
+                if (str.find("[SIZE_4_1]", 0) != std::string::npos) {
+                    break;
+                }
+            }
+            for (int i = 3; i >= 0; --i) {
+                int* temp = new int[4];
+                for (int j = 0; j < 4; ++j) {
+                    fixture_data >> temp[j];
+                }
+                input[i] = temp;
+            }
+        }
+    }
+    ~Size_4_Sudoku_1() {
+        for (int i = 0; i < 4; ++i) {
+            delete[] input[i];
+        }
+        delete[] input;
+    }
+
+    int** input;
+};
+
+class Size_16_Sudoku_1 {
+public:
+    Size_16_Sudoku_1() {
+        input = new int*[16];
+        std::ifstream fixture_data ("tests/test_fixture_data.txt", std::ios::in);
+        if (fixture_data.is_open()) {
+            std::string str;
+            while (std::getline(fixture_data, str)) {
+                if (str.find("[SIZE_16_1]", 0) != std::string::npos) {
+                    break;
+                }
+            }
+            for (int i = 15; i >= 0; --i) {
+                int* temp = new int[16];
+                for (int j = 0; j < 16; ++j) {
+                    fixture_data >> temp[j];
+                }
+                input[i] = temp;
+            }
+        }
+    }
+    ~Size_16_Sudoku_1() {
+        for (int i = 0; i < 16; ++i) {
             delete[] input[i];
         }
         delete[] input;

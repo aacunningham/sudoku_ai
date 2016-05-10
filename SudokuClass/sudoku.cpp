@@ -8,8 +8,13 @@
 #include "sudoku.h"
 
 
-Sudoku::Sudoku()
-    : dimension(9) {
+Sudoku::Sudoku(int size) {
+    int root = std::round(std::sqrt(size));
+    if (root * root != size) {
+        throw std::invalid_argument("Size of Sudoku puzzle must be a perfect square");
+    } else {
+        dimension = size;
+    }
     squares.resize(dimension);
     domains.resize(dimension);
     for (int y = 0; y < dimension; ++y) {
@@ -25,8 +30,13 @@ Sudoku::Sudoku()
     modified = false;
 }
 
-Sudoku::Sudoku(int** input, int size)
-    : dimension(size) {
+Sudoku::Sudoku(int** input, int size) {
+    int root = std::round(std::sqrt(size));
+    if (root * root != size) {
+        throw std::invalid_argument("Size of Sudoku puzzle must be a perfect square");
+    } else {
+        dimension = size;
+    }
     squares.resize(dimension);
     domains.resize(dimension);
     for (int y = 0; y < dimension; ++y) {
@@ -34,7 +44,9 @@ Sudoku::Sudoku(int** input, int size)
         domains[y].resize(dimension);
         for (int x = 0; x < dimension; ++x) {
             if (input[y][x] < 0 || input[y][x] > dimension) {
-                throw std::domain_error("Sudoku may only accept values 0 through 9");
+                std::ostringstream ostream;
+                ostream << "Sudoku may only accept values 0 through " << dimension << "; Value: " << input[y][x] << "; Location: " << x << "," << y;
+                throw std::domain_error(ostream.str());
             }
             squares[y][x] = input[y][x];
             for (int k = 1; k <= dimension; ++k) {
@@ -62,7 +74,7 @@ Sudoku::Sudoku (const Sudoku& input)
 
 
 bool Sudoku::operator==(const Sudoku& other) const {
-    bool equal = true;
+    bool equal = dimension == other.dimension;
     for (int y = 0; y < dimension && equal == true; ++y) {
         for (int x = 0; x < dimension && equal == true; ++x) {
             if (squares[y][x] != other.squares[y][x]) {
@@ -84,7 +96,7 @@ int Sudoku::read(const int& x, const int& y) {
         return squares[y][x];
     } else {
         std::ostringstream ostream;
-        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << x << "," << y << '\n';
+        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << x << "," << y;
         throw std::domain_error(ostream.str());
     }
 }
@@ -96,7 +108,7 @@ int Sudoku::read(const std::pair<int, int>& coordinates) {
         return squares[coordinates.second][coordinates.first];
     } else {
         std::ostringstream ostream;
-        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << coordinates.first << "," << coordinates.second << '\n';
+        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << coordinates.first << "," << coordinates.second;
         throw std::domain_error(ostream.str());
     }
 }
@@ -111,7 +123,7 @@ void Sudoku::write(const int& value, const int& x, const int& y) {
         return;
     } else {
         std::ostringstream ostream;
-        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << x << "," << y << '\n';
+        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << x << "," << y;
         throw std::domain_error(ostream.str());
     }
 }
@@ -125,7 +137,7 @@ bool Sudoku::check_domain(const int& val, const int& x, const int& y) {
         return domains[y][x].count(val) == 1;
     } else {
         std::ostringstream ostream;
-        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << x << "," << y << '\n';
+        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << x << "," << y;
         throw std::domain_error(ostream.str());
     }
 }
@@ -136,7 +148,7 @@ std::set<int> Sudoku::get_domain(const int& x, const int& y) {
         return domains[y][x];
     } else {
         std::ostringstream ostream;
-        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << x << "," << y << '\n';
+        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << x << "," << y;
         throw std::domain_error(ostream.str());
     }
 }
@@ -148,7 +160,7 @@ std::set<int> Sudoku::get_domain(const std::pair<int, int>& coordinates) {
         return domains[coordinates.second][coordinates.first];
     } else {
         std::ostringstream ostream;
-        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << coordinates.first << "," << coordinates.second << '\n';
+        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << coordinates.first << "," << coordinates.second;
         throw std::domain_error(ostream.str());
     }
 }
@@ -160,7 +172,7 @@ void Sudoku::set_domain(const std::set<int>& domain, const std::pair<int, int>& 
         domains[coordinates.second][coordinates.first] = domain;
     } else {
         std::ostringstream ostream;
-        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << coordinates.first << "," << coordinates.second << '\n';
+        ostream << "Out of dimension of puzzle. Dimension: " << dimension << "; Given: " << coordinates.first << "," << coordinates.second;
         throw std::domain_error(ostream.str());
     }
 }
@@ -315,15 +327,19 @@ bool solve(Sudoku& sudoku, int& backtracksOUT, std::chrono::duration<double>& ti
     while(true) {
         sudoku.update_domains();
         if (!sudoku.is_valid()) {
-            auto previous_sudoku = history.top().first;
-            auto wrong_coordinates = history.top().second;
-            int wrong_value = sudoku.read(wrong_coordinates);
-            sudoku = previous_sudoku;
-            auto domain = sudoku.get_domain(wrong_coordinates);
-            domain.erase(wrong_value);
-            sudoku.set_domain(domain, wrong_coordinates);
-            history.pop();
-            ++backtracksOUT;
+            if (history.size() > 0) {
+                auto previous_sudoku = history.top().first;
+                auto wrong_coordinates = history.top().second;
+                int wrong_value = sudoku.read(wrong_coordinates);
+                sudoku = previous_sudoku;
+                auto domain = sudoku.get_domain(wrong_coordinates);
+                domain.erase(wrong_value);
+                sudoku.set_domain(domain, wrong_coordinates);
+                history.pop();
+                ++backtracksOUT;
+            } else {
+                break;
+            }
         }
         auto coordinates = sudoku.get_next_single_domain();
         if (coordinates.first != -1) {
@@ -382,15 +398,6 @@ int find_all_solutions(Sudoku& sudoku) {
             } else {
                 if (sudoku.is_valid()) {
                     ++number_of_solutions;
-                    std::cout << "Valid Sudoku:\n";
-                    for (int i = dimension - 1; i >= 0; --i) {
-                        for (int j = 0; j < dimension; ++j) {
-                            std::cout << sudoku.read(j, i) << ' ';
-                        }
-                        std::cout << '\n';
-                    }
-                } else {
-                    std::cout << "Invalid Sudoku\n";
                 }
                 if (history.size() > 0) {
                     auto previous_sudoku = history.top().first;

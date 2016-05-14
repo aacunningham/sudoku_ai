@@ -1,6 +1,8 @@
 #include <iostream>
+#include <vector>
 #include <fstream>
 #include <string>
+#include <sstream>
 
 class Solved {
 public:
@@ -379,5 +381,45 @@ public:
     }
 
     int** input;
+};
+
+class Tiered_All_Sudoku {
+public:
+    Tiered_All_Sudoku() {
+        inputs.resize(5);
+        for (int z = 0; z < 5; ++z) {
+            std::ifstream fixture_data;
+            std::ostringstream file_name;
+            file_name << "tests/" << z << "_sudoku.txt";
+            std::cout << "Opening " << file_name.str() << '\n';
+            fixture_data.open(file_name.str(), std::ios::in);
+            if (fixture_data.is_open()) {
+                std::cout << "Opened " << file_name.str() << '\n';
+                for (int x = 0; x < 20 ; ++x) {
+                    int** input = new int*[9];
+                    for (int i = 8; i >= 0; --i) {
+                        input[i] = new int[9];
+                        for (int j = 0; j < 9; ++j) {
+                            fixture_data >> input[i][j];
+                        }
+                    }
+                    inputs[z].push_back(input);
+                }
+            }
+            fixture_data.close();
+        }
+    }
+    ~Tiered_All_Sudoku() {
+        for (auto m : inputs) {
+            for (int** n : m) {
+                for (int i = 0; i < 9; ++i) {
+                    delete[] n[i];
+                }
+                delete[] n;
+            }
+        }
+    }
+
+    std::vector<std::vector<int**>> inputs;
 };
 

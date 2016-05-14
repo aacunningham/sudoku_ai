@@ -298,3 +298,66 @@ BOOST_AUTO_TEST_CASE (sudoku_size_16_solve) {
 
 BOOST_AUTO_TEST_SUITE_END ();
 
+BOOST_AUTO_TEST_CASE (sudoku_create) {
+    int removed;
+    Sudoku test = create_sudoku(9, 10, removed);
+    for (int i = 8; i >= 0; --i) {
+        for (int j = 0; j < 9; ++j) {
+            std::cout << test.read(j, i) << ' ';
+        }
+        std::cout << std::endl;
+    }
+
+    std::chrono::duration<double> time;
+    int backtracks;
+    BOOST_CHECK(solve(test, backtracks, time));
+
+    std::cout << "Custom Sudoku: " << time.count() << "s, " << backtracks << " backtracks\n";
+}
+
+BOOST_AUTO_TEST_CASE (sudoku_create_difficulty) {
+    float averages[5] = {0.0};
+    int temp;
+    for (int i = 0; i < 50; ++i) {
+        std::cout << "Creating sudoku " << i << '\n';
+        create_sudoku(9, (i / 10) + 1, temp);
+        std::cout << "Number removed for " << i << ": " << temp << '\n';
+        averages[i/10] += temp;
+    }
+    for (int i = 0; i < 5; ++i) {
+        averages[i] /= 10;
+        std::cout << "Avg. left for difficulty of " << i << ": " << 81.0 - averages[i] << "\n";
+    }
+}
+
+BOOST_FIXTURE_TEST_SUITE (sudoku_tiered_all, Tiered_All_Sudoku);
+
+BOOST_AUTO_TEST_CASE (sudoku_tiered_all_solve) {
+    int counter = 0;
+    for (auto m : inputs) {
+        std::cout << "Starting difficulty " << counter << '\n';
+        int backtracks_sum = 0;
+        std::chrono::duration<double> time_sum(0);
+        for (int** input : m) {
+            std::cout << "Starting puzzle\n";
+            Sudoku test = Sudoku(input);
+            std::chrono::duration<double> time;
+            int backtracks;
+            BOOST_CHECK(solve(test, backtracks, time));
+            
+            backtracks_sum += backtracks;
+            time_sum += time;
+        }
+        float backtracks_avg = backtracks_sum / m.size();
+        std::chrono::duration<double> time_avg = time_sum / m.size();
+
+        std::cout << "Ran " << m.size() << " Tests; Difficulty: " << counter << '\n'
+            << "Total Backtracks: " << backtracks_sum << '\n'
+            << "Avg. Backtracks: " << backtracks_avg << '\n'
+            << "Total Time: " << time_sum.count() << '\n'
+            << "Avg. Time: " << time_avg.count() << "s\n\n";
+        ++counter;
+    }
+}
+
+BOOST_AUTO_TEST_SUITE_END ();

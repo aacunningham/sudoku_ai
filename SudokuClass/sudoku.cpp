@@ -1,9 +1,13 @@
 #include <stdexcept>
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <utility>
 #include <chrono>
+#include <random>
 #include <cmath>
+#include <array>
+#include <stack>
 #include <set>
 #include "sudoku.h"
 
@@ -252,6 +256,19 @@ void Sudoku::update_domains() {
 }
 
 
+void Sudoku::reset_domains() {
+    for (int y = 0; y < dimension; ++y) {
+        for (int x = 0; x < dimension; ++x) {
+            domains[y][x].clear();
+            for (int k = 1; k <= dimension; ++k) {
+                domains[y][x].insert(k);
+            }
+        }
+    }
+    update_domains();
+}
+
+
 bool Sudoku::is_valid() {
     if (modified) {
         update_domains();
@@ -346,7 +363,10 @@ bool solve(Sudoku& sudoku, int& backtracksOUT, std::chrono::duration<double>& ti
             int first_val = *(sudoku.get_domain(coordinates).begin());
             sudoku.write(first_val, coordinates.first, coordinates.second);
         } else {
-            coordinates = sudoku.get_next_empty_square();
+            coordinates = sudoku.get_next_n_domain(2);
+            if (coordinates.first == -1) {
+                coordinates = sudoku.get_next_empty_square();
+            }
             if (coordinates.first != -1) {
                 history.push(std::pair<Sudoku, std::pair<int, int>>(sudoku, coordinates));
                 int first_val = *(sudoku.get_domain(coordinates).begin());
@@ -362,12 +382,19 @@ bool solve(Sudoku& sudoku, int& backtracksOUT, std::chrono::duration<double>& ti
 }
 
 
-int find_all_solutions(Sudoku& sudoku) {
+bool solve(Sudoku& sudoku) {
+    int backtracks = 0;
+    std::chrono::duration<double> time;
+    return solve(sudoku, backtracks, time);
+}
+
+
+int find_all_solutions(Sudoku sudoku, bool stop_if_extra_found) {
     int number_of_solutions = 0;
+
     if (!sudoku.is_valid()) {
-        return false;
+        return 0;
     }
-    const int dimension = sudoku.get_dimension();
     std::stack<std::pair<Sudoku, std::pair<int, int>>> history;
     while(true) {
         sudoku.update_domains();
@@ -385,6 +412,7 @@ int find_all_solutions(Sudoku& sudoku) {
                 break;
             }
         }
+
         auto coordinates = sudoku.get_next_single_domain();
         if (coordinates.first != -1) {
             int first_val = *(sudoku.get_domain(coordinates).begin());
@@ -398,6 +426,9 @@ int find_all_solutions(Sudoku& sudoku) {
             } else {
                 if (sudoku.is_valid()) {
                     ++number_of_solutions;
+                    if (stop_if_extra_found && number_of_solutions > 1) {
+                        break;
+                    }
                 }
                 if (history.size() > 0) {
                     auto previous_sudoku = history.top().first;
@@ -415,5 +446,66 @@ int find_all_solutions(Sudoku& sudoku) {
         }
     }
     return number_of_solutions;
+}
+
+
+Sudoku create_sudoku(const int& size, const int& difficulty, int& removedOUT) {
+    std::cout << "Creating puzzle...\n";
+    Sudoku new_puzzle = Sudoku(size);
+
+    std::vector<int> values;
+    values.resize(size);
+    for (int i = 0; i < size; ++i) {
+        values[i] = i;
+    }
+
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(values.begin(), values.end(), g);
+
+    for (int i = 0; i < size; ++i) {
+        new_puzzle.write(values[i], i, 0);
+    }
+
+    solve(new_puzzle);
+
+    std::uniform_int_distribution<int> uniform_dist(0, size-1);
+    int removed = 0;
+    int counter = 0;
+    while (counter < difficulty) {
+        int x, y;
+        while (true) {
+            x = uniform_dist(rd);
+            y = uniform_dist(rd);
+            if (new_puzzle.read(x, y) != 0) {
+                break;
+            }
+        }
+        int old_1 = new_puzzle.read(x, y);
+        int old_2 = new_puzzle.read(y, x);
+        new_puzzle.write(0, x, y);
+        new_puzzle.write(0, y, x);
+        new_puzzle.reset_domains();
+        if (find_all_solutions(new_puzzle, true) == 1) {
+            counter = 0;
+            ++removed;
+            if (x != y) {
+                ++removed;
+            }
+            std::cout << "Removed " << x << ',' << y << " and " << y << ',' << x << '\n';
+        } else {
+            std::cout << "Did not remove, counter is increased; x: " << x << ", y:" << y << '\n';
+            ++counter;
+            new_puzzle.write(old_1, x, y);
+            new_puzzle.write(old_2, y, x);
+        }
+    }
+
+    // std::cout << "Removed " << removed << " numbers from the puzzle\n";
+    // std::cout << size * size - removed << " numbers remain\n";
+    
+    removedOUT = removed;
+
+    return new_puzzle;
 }
 

@@ -4,8 +4,6 @@
 #include <utility>
 #include <vector>
 #include <chrono>
-#include <stack>
-#include <array>
 #include <set>
 
 
@@ -35,6 +33,7 @@ public:
     std::pair<int, int> get_next_empty_square();
 
     void update_domains();
+    void reset_domains();
 
     bool is_valid();
 
@@ -49,7 +48,10 @@ private:
 
 
 bool solve(Sudoku& sudoku, int& backtracksOUT, std::chrono::duration<double>& timeOUT);
-int find_all_solutions(Sudoku& sudoku);
+bool solve(Sudoku& sudoku);
+int find_all_solutions(Sudoku sudoku, bool stop_if_extra_found = false);
+
+Sudoku create_sudoku(const int& size, const int& difficulty, int& removedOUT);
 
 #endif
 

@@ -1,0 +1,58 @@
+The Sudoku Solver
+By Aaron Cunningham
+
+
+Building on Linux (and maybe Mac):
+Make sure you have C++11 available on your computer, as well as cmake and make
+
+I believe the project also relies on the Boost Unit Test Framework, but if you delete the `tests` folder,
+you should be fine.
+
+In a new directory (either within the project code or alongside it), run in the terminal:
+
+    cmake /location/of/the/project
+
+This should build the correct tools to create the project, so you can then run:
+
+    make
+
+This will build the executables for the project. If you want to run the test units, 
+you should also run the python script which will pull in puzzles from sudokupuzzles.org.
+Run the file (from the same folder you ran make) as such:
+
+    python /location/of/the/project/script.py
+
+To run the tests, use the following command:
+
+    ./tests/Test
+
+To run the program, run this command:
+
+    ./Sudoku_AI
+
+
+Building on Windows:
+I really don't know how to help you. Try changing Sudoku_AIConfig.h.in to Sudoku_AIConfig.h, and change the
+text within from @...@ to whatever numbers you want.
+
+Then just build main.cpp and SudokuClass/sudoku.cpp together and it should work (hopefully!).
+If not, then you'll just have to read the source code and take my word on the results.
+
+
+
+Results:
+
+The code successfully solve sudoku problems of any perfect square number (4, 9, 16, ...). It can also create
+puzzles as well, though this process becomes a lot longer for anything larger than 16x16 puzzles.
+
+Based off of puzzles retrieved from sudokupuzzles.org, the assignment can solve the most simple puzzles in
+around 5ms, and the most difficult in anywhere from 1s to 10s to 1min. The AI Escargot puzzle, noted as
+being the most difficult to solve, takes around .8s to solve. The easiest problems never had to backtrack, while
+the more difficult puzzles involved 400-1400 backtracks.
+
+The project can also check if a sudoku has multiple solutions, though this is not accessible through
+the driver program. This code is used to check whether a created puzzle is valid or not, as well
+made puzzles only have 1 solution.
+
+
+

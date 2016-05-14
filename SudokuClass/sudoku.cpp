@@ -492,17 +492,12 @@ Sudoku create_sudoku(const int& size, const int& difficulty, int& removedOUT) {
             if (x != y) {
                 ++removed;
             }
-            std::cout << "Removed " << x << ',' << y << " and " << y << ',' << x << '\n';
         } else {
-            std::cout << "Did not remove, counter is increased; x: " << x << ", y:" << y << '\n';
             ++counter;
             new_puzzle.write(old_1, x, y);
             new_puzzle.write(old_2, y, x);
         }
     }
-
-    // std::cout << "Removed " << removed << " numbers from the puzzle\n";
-    // std::cout << size * size - removed << " numbers remain\n";
     
     removedOUT = removed;
 

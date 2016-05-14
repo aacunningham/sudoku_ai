@@ -3,6 +3,8 @@
 #include "Sudoku_AIConfig.h"
 #include "SudokuClass/sudoku.h"
 
+
+// Main Driver
 int main (){
     std::cout << "Sudoku AI, version " << Sudoku_AI_VERSION_MAJOR << "." << Sudoku_AI_VERSION_MINOR << std::endl;
     std::cout << "Written by Aaron Cunningham\n" << std::endl;
@@ -84,7 +86,7 @@ int main (){
             break;
         } else {
             std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     }
 
